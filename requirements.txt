@@ -1,5 +1,7 @@
 flask==3.0.3
 flask_socketio==5.4.1
 flask_cors==5.0.0
+flask_bcrypt==3.0.2
+flask_login==0.6.3
 pymongo==4.10.1
 geopy==2.4.1
