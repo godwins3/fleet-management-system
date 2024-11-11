@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content">
+    <div class="intro">
+        <h2>Performance Analysis</h2>
+        <p class="lead">Analyze the performance metrics of your fleet.</p>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="stats" id="summary-stats">
+        <!-- Content will be populated by JavaScript -->
+    </div>
+
+    <!-- Vehicle Performance Table -->
+    <div class="performance-table">
+        <h3>Vehicle Performance</h3>
+        <table id="vehicle-performance-table">
+            <thead>
+                <tr>
+                    <th>Vehicle ID</th>
+                    <th>Model</th>
+                    <th>Distance Traveled (km)</th>
+                    <th>Fuel Consumed (liters)</th>
+                    <th>Efficiency (km/l)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Content will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Performance Graphs -->
+    <div class="chart-container">
+        <h3>Performance Trends</h3>
+        <canvas id="performanceChart"></canvas>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/api/get-performance')
+            .then(response => response.json())
+            .then(data => {
+                // Populate summary statistics
+                document.getElementById('summary-stats').innerHTML = `
+                    <div class="stat-item">
+                        <h3>Total Distance Traveled</h3>
+                        <p>${data.total_distance} km</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Total Fuel Consumed</h3>
+                        <p>${data.total_fuel} liters</p>
+                    </div>
+                `;
+
+                // Populate vehicle performance table
+                const tableBody = document.querySelector('#vehicle-performance-table tbody');
+                data.vehicles.forEach(vehicle => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${vehicle.id}</td>
+                        <td>${vehicle.model}</td>
+                        <td>${vehicle.distance}</td>
+                        <td>${vehicle.fuel}</td>
+                        <td>${vehicle.efficiency}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Render performance chart
+                var ctx = document.getElementById('performanceChart').getContext('2d');
+                var performanceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: 'Distance Traveled (km)',
+                            data: data.distances,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: false
+                        }, {
+                            label: 'Fuel Consumed (liters)',
+                            data: data.fuels,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    });
+</script>
+{% endblock %}

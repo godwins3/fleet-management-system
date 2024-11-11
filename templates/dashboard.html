@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Dashboard</h2>
+    <div class="stats">
+        <div class="stat-item">
+            <h3>Total Vehicles</h3>
+            <p>50</p>
+        </div>
+        <div class="stat-item">
+            <h3>Vehicles in Transit</h3>
+            <p>20</p>
+        </div>
+        <div class="stat-item">
+            <h3>Delivered Packages</h3>
+            <p>120</p>
+        </div>
+        <div class="stat-item">
+            <h3>Pending Deliveries</h3>
+            <p>30</p>
+        </div>
+    </div>
+
+    <h2>Recent Activities</h2>
+    <ul class="activities">
+        <li>Vehicle V123 started its route at 09:00 AM</li>
+        <li>Vehicle V124 delivered package P456 at 10:30 AM</li>
+        <li>Vehicle V125 refueled at station S789 at 11:00 AM</li>
+        <li>Vehicle V126 arrived at destination D012 at 12:15 PM</li>
+    </ul>
+
+    <h2>Performance Metrics</h2>
+    <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['January', 'February', 'March'],
+            datasets: [{
+                label: 'Distance Traveled (km)',
+                data: [300, 400, 350],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Fuel Consumed (L)',
+                data: [50, 75, 100],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

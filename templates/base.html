@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Ensure you are including the Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <h1></h1>
+                <br>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('vehicle_tracking') }}">Vehicle Tracking</a></li>
+                    <li><a href="{{ url_for('performance') }}">Performance Analysis</a></li>
+                    <!-- <li><a href="#" id="notificationButton">Notifications</a></li> -->
+                </ul>
+            </nav>
+        </aside>
+        <div class="main-content">
+            <header>
+                <h1>Fleet Management System</h1>
+            </header>
+            <div id="notificationPopup" class="popup hidden">
+                <h3>Notifications</h3>
+                <ul id="notificationList">
+                    <!-- Notifications will be dynamically inserted here -->
+                </ul>
+            </div>
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <script>
+        var socket = io('http://localhost:5000');
+        socket.on('vehicleUpdate', function(vehicle) {
+            console.log('Vehicle Update:', vehicle);
+            addNotification('Vehicle Update', `Vehicle ${vehicle._id} updated.`);
+        });
+
+        $(document).ready(function() {
+            $('#notificationButton').on('click', function() {
+                $('#notificationPopup').toggleClass('hidden');
+            });
+        });
+
+        function addNotification(title, message) {
+            const notificationList = $('#notificationList');
+            const notificationItem = `<li><strong>${title}:</strong> ${message}</li>`;
+            notificationList.prepend(notificationItem);
+        }
+
+        // Add some dummy notifications
+        $(document).ready(function() {
+            addNotification('Test Notification', 'This is a test notification.');
+            addNotification('Another Notification', 'Here is another notification.');
+        });
+    </script>
+    
+</body>
+</html>

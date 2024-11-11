@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="content">
+        <div class="intro">
+            <h2>Vehicle Tracking System</h2>
+            <p>Real-time tracking and management of your fleet.</p>
+        </div>
+        
+        <!-- Vehicle List -->
+        <div class="vehicle-list">
+            <h3>Tracked Vehicles</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle ID</th>
+                        <th>Model</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Last Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Toyota Prius</td>
+                        <td>Nairobi</td>
+                        <td>Active</td>
+                        <td>2024-11-07 10:00 AM</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Ford Explorer</td>
+                        <td>Mombasa</td>
+                        <td>Inactive</td>
+                        <td>2024-11-07 09:30 AM</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Honda Civic</td>
+                        <td>Kisumu</td>
+                        <td>Active</td>
+                        <td>2024-11-07 08:45 AM</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Nissan Leaf</td>
+                        <td>Nakuru</td>
+                        <td>Active</td>
+                        <td>2024-11-07 11:15 AM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Map Section -->
+        <div class="map-section">
+            <h3>Vehicle Locations</h3>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the map
+            var map = L.map('map').setView([-1.2921, 36.8219], 10); // Center at Nairobi
+
+            // Set up the OpenStreetMap layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Dummy vehicle data
+            var vehicles = [
+                { lat: -1.2921, lng: 36.8219, model: 'Toyota Prius' }, // Nairobi
+                { lat: -4.0435, lng: 39.6682, model: 'Ford Explorer' }, // Mombasa
+                { lat: -0.0917, lng: 34.7680, model: 'Honda Civic' }, // Kisumu
+                { lat: -0.2832, lng: 36.0674, model: 'Nissan Leaf' } // Nakuru
+            ];
+
+            // Add markers for each vehicle
+            vehicles.forEach(function (vehicle) {
+                L.marker([vehicle.lat, vehicle.lng])
+                    .addTo(map)
+                    .bindPopup(vehicle.model);
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{% endblock %}
