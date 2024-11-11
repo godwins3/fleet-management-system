@@ -13,6 +13,8 @@
 </head>
 <body>
     <div class="container">
+        {% if request.endpoint not in ['auth.login', 'auth.register'] %}
+        <!-- Sidebar (only shown for non-auth pages) -->
         <aside class="sidebar">
             <nav>
                 <h1></h1>
@@ -25,6 +27,9 @@
                 </ul>
             </nav>
         </aside>
+        {% endif %}
+
+        <!-- Main content area -->
         <div class="main-content">
             <header>
                 <h1>Fleet Management System</h1>
@@ -40,6 +45,7 @@
             </main>
         </div>
     </div>
+
     <script>
         var socket = io('http://localhost:5000');
         socket.on('vehicleUpdate', function(vehicle) {
@@ -65,6 +71,5 @@
             addNotification('Another Notification', 'Here is another notification.');
         });
     </script>
-    
 </body>
 </html>

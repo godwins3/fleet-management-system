@@ -1,17 +1,38 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from helpers.calc_distance import calculate_distance
+from helpers.auth import auth # import auth blueprint
 
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client.fleet_management
 vehicles_collection = db.vehicles
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'  # Redirect to login page if not logged in
+
+# Initialize Flask-Bcrypt
+bcrypt = Bcrypt(app)
+
+# Register the auth blueprint
+app.register_blueprint(auth, url_prefix='/auth')
+
+# Load user for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    # Fetch user from MongoDB based on user_id
+    return db.users.find_one({"_id": user_id})
 
 @app.route('/')
 def dashboard():
@@ -81,4 +102,4 @@ def get_performance():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True)   
